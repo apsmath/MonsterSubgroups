@@ -10,7 +10,7 @@ comm = lambda a, b: (1/a)*(1/b)*a*b
 if hasattr(e, "as_int"):
     as_int = lambda x: x.as_int()
 else:
-    as_int = lambda x: x.reduce().as_tuples()
+    as_int = lambda x: tuple(x.reduce().as_tuples())
 
 if hasattr(e, "as_Co1_bitmatrix"):
     to_co1 = lambda x: x.as_Co1_bitmatrix().tobytes()
@@ -25,10 +25,8 @@ else:
         # The above uses a different basis to MM.as_Co1_bitmatrix. If strict
         # interoperability is required, mat should be rotated 180 degrees.
         return str(mat)
-    
+
     from mmgroup import generators as mmgroup_generators
-    
-    to_co1 = lambda x: str(elt_to_24_mat(x))
 
 if hasattr(XLeech2, "as_Leech2_bitvector"):
     as_bitvector = lambda x: XLeech2(x).as_Leech2_bitvector()
@@ -36,7 +34,7 @@ else:
     # Inspired by mmgroup/structures/xleech2.py
     def as_bitvector(x):
         n = XLeech2(x).value
-        return [(n >> i) & 1 for i in range(24)]
+        return numpy.array([n >> i for i in range(24)], dtype=int) & 1
 
 
 def dim_q(gens):
@@ -143,11 +141,11 @@ def map_to_vectors(gens, n=0, index=0):
                 if g**h != g:
                     raise Exception("Not an elementary abelian group (c.f. %d, %d)" % (j, i))
     
-    the_map = {e.as_int(): tuple([0]*(len(gens) - index))}
+    the_map = {as_int(e): tuple([0]*(len(gens) - index))}
     elements = [(e, tuple([0]*len(gens)))]
     for i, g in enumerate(gens):
         # Check g is independent of previous generators
-        if test_size and g.as_int() in the_map:
+        if test_size and as_int(g) in the_map:
             raise Exception("Generators are not independent (c.f. %d)" % i)
         
         for k in range(n**i):
@@ -159,7 +157,7 @@ def map_to_vectors(gens, n=0, index=0):
                 print(*vector, " "*35, end="\r")
                 element *= g
                 vector = vector[:i] + (j,) + vector[i+1:]
-                the_map[element.as_int()] = vector[index:]
+                the_map[as_int(element)] = vector[index:]
                 elements.append((element, vector))
     
     return the_map
@@ -252,7 +250,7 @@ def _size_image_conjugation(gens, basis, hom, n):
     # everything can be done with much faster matrix arithmetic.
     
     # Express the actions of gens as matrices in numpy format.
-    mat_gens = [numpy.array([hom[(h**g).as_int()] for h in basis], dtype=numpy.uint) for g in gens]
+    mat_gens = [numpy.array([hom[as_int(h**g)] for h in basis], dtype=numpy.uint) for g in gens]
     
     # Finally, do the actual enumeration with the matrices.
     reps = [numpy.identity(len(basis), dtype=numpy.uint)]
