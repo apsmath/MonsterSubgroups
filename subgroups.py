@@ -4318,7 +4318,7 @@ b_involutions_1 = [x for x in involutions if (x*beta1).order(60) in orders]
 b_involutions_2 = [x for x in b_involutions_1 if (x*b3).order(60) in orders]
 any((b2*x*b3).order(60) in orders for x in b_involutions_2) # False
 
-theta1 = (g2_T**(g3_T*g3_T)).reduce()
+theta1 = (g2_T**(g3_T*g2_T)).reduce()
 t_involutions_1 = [x for x in involutions if (x*theta1).order(60) in orders]
 any((g2_T*x*g3_T).order(60) in orders for x in t_involutions_1) # False
 
