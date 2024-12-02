@@ -433,8 +433,8 @@ def test_m11(r1, r2):
     if r3**11 != e: return False
     r4 = r3*r2
     if r4**6 != e: return False
-    r6 = r1/r2
-    return r3**2*r6*r3*r4*r6*r3*r6**2 == e
+    r5 = r1/r2
+    return r3**2*r5*r3*r4*r5*r3*r5**2 == e
 
 
 def test_xsl(r1, r2, m, is_sl=False):

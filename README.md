@@ -16,3 +16,6 @@ after running an initialising cell, one can begin execution
 at any subsection. Logical interdependence is indicated
 by appropriate references in the textual annotations, with recurring variables
 defined in each subsection where they appear.
+
+Sample GAP code for verifying some of the claims made in the paper
+is included in the file [`extras.g`](extras.g).
